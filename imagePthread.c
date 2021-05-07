@@ -14,9 +14,9 @@
 #include "stb_image_write.h"
 struct Thread
 {
-    Image* srcImage;
-    Image* destImage;
     Matrix al;
+    Image* destImage;
+    Image* srcImage;
     int id;
 };
 //An array of kernel matrices to be used for image convolution.  
@@ -137,7 +137,7 @@ enum KernelTypes GetKernelType(char* type)
 int main(int argc, char** argv)
 {
     long t1, t2;
-    t1 = time(NULL);
+    t1 = omp_get_wtime();
 
     stbi_set_flip_vertically_on_load(0);
     if (argc != 3)
@@ -171,7 +171,7 @@ int main(int argc, char** argv)
     stbi_image_free(srcImage.data);
 
     free(destImage.data);
-    t2 = time(NULL);
+    t2 = omp_get_wtime();
     printf("Took %ld seconds\n", t2 - t1);
     return 0;
 }
