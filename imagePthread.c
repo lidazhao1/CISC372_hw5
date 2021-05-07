@@ -12,7 +12,13 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
-
+struct ThreadArgs
+{
+    Image* srcImage;
+    Image* destImage;
+    Matrix algorithm;
+    int thread_idx;
+};
 //An array of kernel matrices to be used for image convolution.  
 //The indexes of these match the enumeration from the header file. ie. algorithms[BLUR] returns the kernel corresponding to a box blur.
 Matrix algorithms[] = {
@@ -55,16 +61,7 @@ uint8_t getPixelValue(Image* srcImage, int x, int y, int bit, Matrix algorithm)
     return result;
 }
 
-struct ThreadArgs
-{
-    Image* srcImage;
-    Image* destImage;
-    Matrix algorithm;
-    int thread_idx;
-};
-
-// thread function handler
-void * threads(void * args){
+int * threads(void * args){
     struct ThreadArgs * thread = (struct ThreadArgs *)args;
 
     int row, pix, bit, span;
@@ -85,7 +82,7 @@ void * threads(void * args){
     }
 
     free(thread);
-    return NULL;
+    return 0;
 }
 
 //convolute:  Applies a kernel matrix to an image
