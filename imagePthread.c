@@ -16,8 +16,8 @@ struct ThreadArgs
 {
     Image* srcImage;
     Image* destImage;
-    Matrix algorithm;
-    int thread_idx;
+    Matrix al;
+    int id;
 };
 //An array of kernel matrices to be used for image convolution.  
 //The indexes of these match the enumeration from the header file. ie. algorithms[BLUR] returns the kernel corresponding to a box blur.
@@ -69,13 +69,13 @@ void * threads(void * args){
     for (row = 0; row < thread->srcImage->height; row++)
     {
         // check for thread
-        if (row % 4== thread->thread_idx)
+        if (row % 4== thread->id)
         {
             for (pix = 0; pix < thread->srcImage->width; pix++)
             {
                 for (bit = 0; bit < thread->srcImage->bpp; bit++)
                 {
-                    thread->destImage->data[Index(pix, row,thread->srcImage->width, bit, thread->srcImage->bpp)]= getPixelValue(thread->srcImage, pix, row, bit,thread->algorithm);
+                    thread->destImage->data[Index(pix, row,thread->srcImage->width, bit, thread->srcImage->bpp)]= getPixelValue(thread->srcImage, pix, row, bit,thread->al);
                 }
             }
         }
@@ -99,12 +99,12 @@ void convolute(Image* srcImage, Image* destImage, Matrix algorithm)
         for (int row = 0; row < 3; row++){
             for (int colmn = 0; colmn < 3; colmn++)
             {
-                args->algorithm[row][colmn] = algorithm[row][colmn];
+                args->al[row][colmn] = algorithm[row][colmn];
             }
         }
         args->srcImage = srcImage;
         args->destImage = destImage;
-        args->thread_idx = i;
+        args->id = i;
         pthread_create(&pids[i], NULL, threads, args);
     }
     for (int i = 0; i < 4; i++){
