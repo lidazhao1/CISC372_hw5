@@ -89,10 +89,10 @@ void * threads(void * args){
 //Returns: Nothing
 void convolute(Image* srcImage, Image* destImage, Matrix algorithm){
     struct Thread * t;
-    t = (struct Thread *)malloc(sizeof(struct Thread));
     int num = 4;
     pthread_t p[num];
     for (int i = 0; i < num; i++){
+        t = (struct Thread *)malloc(sizeof(struct Thread));
         for (int row = 0; row < 3; row++){
             for (int colmn = 0; colmn < 3; colmn++)
             {
