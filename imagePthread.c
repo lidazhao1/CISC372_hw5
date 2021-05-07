@@ -63,14 +63,13 @@ uint8_t getPixelValue(Image* srcImage, int x, int y, int bit, Matrix algorithm)
 
 void * threads(void * args){
     struct Thread * thread = (struct Thread *)args;
-
     int row, pix, bit, span;
+    int i;
     span = thread->srcImage->bpp*thread->srcImage->bpp;
     for (row = 0; row < thread->srcImage->height; row++)
     {
-        // check for thread
-        if (row % 4== thread->id)
-        {
+        i = row%4;
+        if (i== thread->id){
             for (pix = 0; pix < thread->srcImage->width; pix++)
             {
                 for (bit = 0; bit < thread->srcImage->bpp; bit++)
@@ -88,25 +87,25 @@ void * threads(void * args){
 //            destImage: A pointer to a  pre-allocated (including space for the pixel array) structure to receive the convoluted image.  It should be the same size as srcImage
 //            algorithm: The kernel matrix to use for the convolution
 //Returns: Nothing
-void convolute(Image* srcImage, Image* destImage, Matrix algorithm)
-{
-    struct Thread * args;
-    pthread_t pids[4];
-    for (int i = 0; i < 4; i++){
-        args = (struct Thread *)malloc(sizeof(struct Thread));
+void convolute(Image* srcImage, Image* destImage, Matrix algorithm){
+    struct Thread * t;
+    int num = 4;
+    pthread_t p[num];
+    for (int i = 0; i < num; i++){
+        t = (struct Thread *)malloc(sizeof(struct Thread));
         for (int row = 0; row < 3; row++){
             for (int colmn = 0; colmn < 3; colmn++)
             {
-                args->al[row][colmn] = algorithm[row][colmn];
+                t->al[row][colmn] = algorithm[row][colmn];
             }
         }
-        args->srcImage = srcImage;
-        args->destImage = destImage;
-        args->id = i;
-        pthread_create(&pids[i], NULL, threads, args);
+        t->id = i;
+        t->srcImage = srcImage;
+        t->destImage = destImage;
+        pthread_create(&p[i], NULL, threads, t);
     }
     for (int i = 0; i < 4; i++){
-        pthread_join(pids[i],NULL);
+        pthread_join(p[i],NULL);
     }
 }
 
@@ -137,7 +136,7 @@ enum KernelTypes GetKernelType(char* type)
 int main(int argc, char** argv)
 {
     long t1, t2;
-    t1 = omp_get_wtime();
+    t1 = time(NULL);
 
     stbi_set_flip_vertically_on_load(0);
     if (argc != 3)
@@ -171,7 +170,7 @@ int main(int argc, char** argv)
     stbi_image_free(srcImage.data);
 
     free(destImage.data);
-    t2 = omp_get_wtime();
+    t2 = time(NULL);
     printf("Took %ld seconds\n", t2 - t1);
     return 0;
 }
