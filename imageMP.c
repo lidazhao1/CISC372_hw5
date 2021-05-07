@@ -67,8 +67,6 @@ void convolute(Image* srcImage, Image* destImage, Matrix algorithm)
 #pragma omp parallel for collapse(3)
     for (row = 0; row < srcImage->height; row++)
     {
-        // int n = omp_get_thread_num();
-        // printf("%d", n);
         for (pix = 0; pix < srcImage->width; pix++)
         {
             for (bit = 0; bit < srcImage->bpp; bit++)
