@@ -12,7 +12,7 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
-struct ThreadArgs
+struct Thread
 {
     Image* srcImage;
     Image* destImage;
@@ -62,7 +62,7 @@ uint8_t getPixelValue(Image* srcImage, int x, int y, int bit, Matrix algorithm)
 }
 
 void * threads(void * args){
-    struct ThreadArgs * thread = (struct ThreadArgs *)args;
+    struct Thread * thread = (struct Thread *)args;
 
     int row, pix, bit, span;
     span = thread->srcImage->bpp*thread->srcImage->bpp;
@@ -90,12 +90,10 @@ void * threads(void * args){
 //Returns: Nothing
 void convolute(Image* srcImage, Image* destImage, Matrix algorithm)
 {
-    struct ThreadArgs * args;
-    
-    // create 4 thread
+    struct Thread * args;
     pthread_t pids[4];
     for (int i = 0; i < 4; i++){
-        args = (struct ThreadArgs *)malloc(sizeof(struct ThreadArgs));
+        args = (struct Thread *)malloc(sizeof(struct Thread));
         for (int row = 0; row < 3; row++){
             for (int colmn = 0; colmn < 3; colmn++)
             {
