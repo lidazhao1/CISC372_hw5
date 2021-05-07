@@ -61,7 +61,7 @@ uint8_t getPixelValue(Image* srcImage, int x, int y, int bit, Matrix algorithm)
     return result;
 }
 
-int * threads(void * args){
+void * threads(void * args){
     struct ThreadArgs * thread = (struct ThreadArgs *)args;
 
     int row, pix, bit, span;
@@ -80,9 +80,7 @@ int * threads(void * args){
             }
         }
     }
-
     free(thread);
-    return 0;
 }
 
 //convolute:  Applies a kernel matrix to an image
