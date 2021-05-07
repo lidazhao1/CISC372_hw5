@@ -1,0 +1,32 @@
+Script started on 2021-05-06 23:18:42-04:00
+]0;lidazhao@br013:~/CISC372_hw5[lidazhao@r004 CISC372_hw5]$ interact --ntasks-per-node=2[K2[K4
+
+A command prompt will appear when your session begins
+"Ctrl+d" or "exit" will end your session
+
+--ntasks-per-node=4
+salloc -J Interact --ntasks-per-node=4
+salloc: Pending job allocation 1082058
+salloc: job 1082058 queued and waiting for resources
+salloc: job 1082058 has been allocated resources
+salloc: Granted job allocation 1082058
+salloc: Waiting for resource configuration
+salloc: Nodes r004 are ready for job
+]0;lidazhao@br013:~/CISC372_hw5[lidazhao@r004 CISC372_hw5]$ ls
+image.h    imagePthread.c  [0m[38;5;13mpic1.jpg[0m  [38;5;13mpic4.jpg[0m     stb_image_write.h
+imageMP.c  makefile        [38;5;13mpic2.jpg[0m  README.md
+imageMP.h  output.txt      [38;5;13mpic3.jpg[0m  stb_image.h
+]0;lidazhao@br013:~/CISC372_hw5[lidazhao@r004 CISC372_hw5]$ make
+gcc -g imageMP.c -o omp -lm -fopenmp
+gcc -g imagePthread.c -o pt -lm -lpthread
+]0;lidazhao@br013:~/CISC372_hw5[lidazhao@r004 CISC372_hw5]$ make[2Pls./pt pic1.jpg edge
+Took 8 seconds
+]0;lidazhao@br013:~/CISC372_hw5[lidazhao@r004 CISC372_hw5]$ ./pt pic1.jpg edge[C[C[1P[1P[1@o[1@m[1@p
+Took 8 seconds
+]0;lidazhao@br013:~/CISC372_hw5[lidazhao@r004 CISC372_hw5]$ exit
+exit
+salloc: Relinquishing job allocation 1082058
+]0;lidazhao@br013:~/CISC372_hw5[lidazhao@r004 CISC372_hw5]$ exit
+exit
+
+Script done on 2021-05-06 23:20:09-04:00
